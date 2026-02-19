@@ -1,5 +1,5 @@
 """
-Rwanda Law AI - Web Interface
+Rwanda Law RAG - Web Interface
 streamlit run app/app.py
 """
 
@@ -233,7 +233,7 @@ def is_not_covered(txt):
 
 st.markdown(f"""
 <div class="header">
-    <h1>Rwanda Law AI</h1>
+    <h1>Rwanda Law RAG</h1>
     <p class="sub">Legal information with article-level citations</p>
     <div class="tags">
         <span class="tag">Constitution (2015)</span>
@@ -344,6 +344,6 @@ st.markdown("""
 </div>
 <div class="foot">
     <p>Knowledge base: Constitution of Rwanda (2015), Penal Code (2018), Labor Law (2018)</p>
-    <p>Rwanda Law AI</p>
+    <p>Rwanda Law RAG</p>
 </div>
 """, unsafe_allow_html=True)

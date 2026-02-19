@@ -1,6 +1,6 @@
-# Rwanda Law AI
+# Rwanda Law RAG
 
-AI-powered legal assistant for Rwandan law. Ask questions in plain language, get answers with exact article citations from the Constitution, Penal Code, and Labor Law.
+RAG-powered legal assistant for Rwandan law. Ask questions in plain language, get answers with exact article citations from the Constitution, Penal Code, and Labor Law.
 
 **Live demo:** [your-app.streamlit.app](https://your-app.streamlit.app)
 
