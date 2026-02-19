@@ -1,7 +1,6 @@
 .env
 __pycache__/
 *.pyc
-chroma_db/
 data/raw_text/
 data/processed/
 requirements.txt
