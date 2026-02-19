@@ -2,7 +2,7 @@
 
 RAG-powered legal assistant for Rwandan law. Ask legal questions in plain language and receive answers grounded in authoritative legal texts, with exact article citations from the Constitution, Penal Code, and Labor Law.
 
-**Live demo:** [your-app.streamlit.app](https://your-app.streamlit.app)
+**Live demo:** [law-rag.streamlit.app](https://law-rag.streamlit.app)
 
 ## What it does
 
