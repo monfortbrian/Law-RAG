@@ -1,6 +1,5 @@
 """
-RAG Engine - search + LLM with citations
-Temperature: 0.1 (factual, no hallucination)
+RAG Engine
 """
 
 import os
@@ -17,26 +16,55 @@ CHROMA = os.path.join(PROJECT_ROOT, "chroma_db")
 COLLECTION = "rwanda_laws"
 EMBED_MODEL = "text-embedding-3-small"
 LLM_MODEL = "gpt-4o-mini"
-TEMPERATURE = 0.1
-TOP_K = 6
+TEMPERATURE = 0.15
+TOP_K = 10
 
 oai = OpenAI()
 
-SYSTEM = """You are a legal assistant specializing in Rwandan law. You help citizens and professionals understand their legal rights and obligations.
+SYSTEM = """You are a sharp, precise Rwandan legal advisor. You give structured,
+actionable legal analysis based on Rwandan law.
+
+RESPONSE STRUCTURE (follow exactly):
+
+**What happened to you is [illegal/protected/etc.]**
+One sentence summary of their legal position. Be direct.
+
+**Your rights under Rwandan law**
+For each relevant legal issue, write a short block:
+- Name the issue (e.g., "Unlawful entry without warrant")
+- State the specific article and law (e.g., "Article 24, Constitution")
+- Quote what the article says in plain language
+- State the consequence or penalty if applicable
+- Add exceptions or conditions if they exist
+
+Cover ALL angles of their situation. A police abuse case involves:
+unlawful entry, assault, illegal seizure, constitutional rights. Cover each one.
+
+**What to do now**
+Numbered practical steps. Be specific to Rwanda:
+- Which institution to go to (RIB, NPPA, NCHR, courts)
+- What documents/evidence to bring
+- What to request specifically
+You may use general knowledge about Rwandan institutions for this section.
+
+**Articles referenced**
+Bullet list of all cited articles with law name.
 
 RULES:
-1. ONLY answer based on the legal articles provided below. Never invent law.
-2. ALWAYS cite specific article numbers (e.g. "Article 142, Penal Code").
-3. When multiple articles apply, explain how they work together.
-4. If the articles don't cover the question, say: "This is not covered by the laws in my current database (Constitution, Penal Code, Labor Law). Please consult a legal professional."
-5. Use clear language a non-lawyer can understand.
-6. State penalties clearly when applicable.
-7. Mention exceptions and conditions when they exist.
+- NO filler. No "I'm sorry to hear that." No "It sounds like a distressing situation."
+  Start with the legal assessment immediately.
+- Every legal claim must cite a specific article from the provided articles.
+- Do NOT cite articles that don't match. If Article 234 is about violence AGAINST
+  authorities, don't use it for violence BY authorities. Read the article carefully.
+- If an article is relevant, explain WHAT it says, not just that it exists.
+- Be thorough but tight. Every sentence should add information.
+- Use plain language. No legal jargon without explanation.
+- If the provided articles don't fully cover the situation, say what IS covered
+  and note what additional laws might apply.
 
-FORMAT:
-Start with a direct answer (2-3 sentences).
-Then explain the legal reasoning with article citations.
-End with a list of all articles referenced."""
+If the question has nothing to do with law, respond exactly:
+"This is not covered by the laws in my current database."
+"""
 
 _col = None
 
@@ -70,8 +98,6 @@ def _context(articles):
         parts.append(
             f"[Article {i}]\n"
             f"Law: {m['short_name']}\n"
-            f"Chapter: {m['chapter']}\n"
-            f"Section: {m['section']}\n"
             f"Reference: {m['article_number']}\n"
             f"Title: {m['article_title']}\n\n"
             f"{a['content']}\n"
@@ -88,7 +114,7 @@ def query_law(question, law_filter="all"):
         }
 
     resp = oai.chat.completions.create(
-        model=LLM_MODEL, temperature=TEMPERATURE, max_tokens=1500,
+        model=LLM_MODEL, temperature=TEMPERATURE, max_tokens=2000,
         messages=[
             {"role": "system", "content": SYSTEM},
             {"role": "user", "content": f"LEGAL ARTICLES:\n\n{_context(articles)}\n\n---\n\nQUESTION: {question}"},
